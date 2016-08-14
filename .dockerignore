@@ -1,0 +1,17 @@
+# git
+.git/
+.gitignore
+
+# mvn
+target/
+
+# build scripts
+.mvn-classpath
+
+# docker
+.dockerignore
+
+# eclipse
+.project
+.classpath
+.settings/

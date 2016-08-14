@@ -1,0 +1,10 @@
+# mvn
+target/
+
+# build scripts
+.mvn-classpath
+
+# eclipse 
+.project
+.classpath
+.settings/
