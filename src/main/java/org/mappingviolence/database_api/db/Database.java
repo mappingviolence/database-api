@@ -55,16 +55,23 @@ public class Database {
     List<String> mongoRequestedFieldNamesList = new ArrayList<>();
     // create a mutable list for the gson serialization
     List<String> requestedFieldNamesList = new ArrayList<>();
+    // boolean for whether to return id
+    boolean returnId = false;
     // if the user requested fields
     if (userRequestedFieldsList.size() > 0) {
+      returnId = userRequestedFieldsList.contains("id");
       userRequestedFieldsList.forEach((requestedField) -> {
         // add them to the mongo list, appending data. b/c they are nested
         mongoRequestedFieldNamesList.add("data.".concat(requestedField));
         // add them to the gson list
         requestedFieldNamesList.add(requestedField);
       });
-      // user didn't request any fields
+      // id doesn't reside as part of class POI
+      mongoRequestedFieldNamesList.remove("data.id");
+
     } else {
+      /* user didn't request any fields */
+      returnId = true;
       // add data (i.e. all fields)
       mongoRequestedFieldNamesList.add("data");
       // add all fields to gson
@@ -121,8 +128,13 @@ public class Database {
     publicPOIfieldsList.forEach((field) -> excludedFieldNamesList.add(field.getName()));
     // remove the requested fields
     requestedFieldNamesList.forEach((fieldName) -> excludedFieldNamesList.remove(fieldName));
-    // need to send id on all requests
-    excludedFieldNamesList.remove("id");
+
+    // add or remove id from gson serialization
+    if (returnId) {
+      excludedFieldNamesList.remove("id");
+    } else {
+      excludedFieldNamesList.add("id");
+    }
 
     // create exclusion strategy
     ExclusionStrategy exclude = new ExclusionStrategy() {

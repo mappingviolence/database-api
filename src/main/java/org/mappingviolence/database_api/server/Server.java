@@ -2,6 +2,7 @@ package org.mappingviolence.database_api.server;
 
 import org.mappingviolence.database_api.db.Database;
 import org.mappingviolence.database_api.exception.NotFoundException;
+import org.mongodb.morphia.query.ValidationException;
 
 import spark.Spark;
 
@@ -25,13 +26,20 @@ public class Server {
   }
 
   public void start() {
+    Spark.exception(ValidationException.class, (exception, req, resp) -> {
+      resp.status(400);
+      resp.body(
+          "One of the fields you requested is not a valid field.\n"
+              + "The invalid field is most likely: " + exception.getMessage().split(" ")[2]);
+    });
     Spark.exception(NotFoundException.class, (exception, req, resp) -> {
       resp.status(404);
       resp.body(exception.getMessage());
     });
     Spark.exception(Exception.class, (exception, req, resp) -> {
       resp.status(500);
-      resp.body(exception.getMessage());
+      // TODO: Change to SERVER_ERROR before production
+      resp.body(exception.getClass().getName());
     });
 
     Spark.get("/pois", (req, resp) -> Database.pois(), new JsonTransformer());
