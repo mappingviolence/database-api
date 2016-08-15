@@ -5,4 +5,4 @@
  * @author Cole Hansen
  *
  */
-package org.mappingviolence.database_api;
+package org.mappingviolence.database_api.main;
