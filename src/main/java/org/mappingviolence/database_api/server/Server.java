@@ -28,6 +28,7 @@ public class Server {
   public void start() {
     Spark.exception(ValidationException.class, (exception, req, resp) -> {
       resp.status(400);
+      // TODO: JSONify
       resp.body(
           "One of the fields you requested is not a valid field.\n"
               + "The invalid field is most likely: " + exception.getMessage().split(" ")[2]);
