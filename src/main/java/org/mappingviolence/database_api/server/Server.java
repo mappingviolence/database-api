@@ -7,6 +7,16 @@ import spark.Spark;
 
 public class Server {
 
+  private static final String NOT_FOUND_ERROR = "{" + "\"success\" : false," + "\"error\" : {"
+      + "\"code\" : 404,"
+      + "\"message\" : \"There is no resource located here. Please change the requested URL.\""
+      + "}" + "}";
+
+  private static final String SERVER_ERROR = "{" + "\"success\" : false," + "\"error\" : {"
+      + "\"code\" : 500,"
+      + "\"message\" : \"There was an error in retrieving the pois. Please try again.\"" + "}"
+      + "}";
+
   public Server() {
   }
 
@@ -21,20 +31,23 @@ public class Server {
     });
     Spark.exception(Exception.class, (exception, req, resp) -> {
       resp.status(500);
-      resp.body(
-          "{" + "\"success\" : false," + "\"error\" : {" + "\"code\" : 500,"
-              + "\"message\" : \"There was an error in retrieving the pois. Please try again.\""
-              + "}" + "}");
+      resp.body(exception.getMessage());
     });
 
     Spark.get("/pois", (req, resp) -> Database.pois(), new JsonTransformer());
-    Spark.get("/pois/:id", (req, resp) -> Database.pois(req.params(":id")), new JsonTransformer());
-
     Spark.get(
-        "/*",
-        (req, resp) -> "{" + "\"success\" : false," + "\"error\" : {" + "\"code\" : 404,"
-            + "\"message\" : \"There is no resource located here. Please change the requested URL.\""
-            + "}" + "}");
+        "/pois/:id",
+        (req, resp) -> Database.pois(req.params(":id"), req.queryParams("f")),
+        new JsonTransformer());
+
+    // because Spark :(
+    Spark.get("/pois/", (req, resp) -> Database.pois(), new JsonTransformer());
+    Spark.get(
+        "/pois/:id/",
+        (req, resp) -> Database.pois(req.params(":id"), req.queryParams("f")),
+        new JsonTransformer());
+
+    Spark.get("/*", (req, resp) -> NOT_FOUND_ERROR);
     Spark.after((req, resp) -> {
       resp.header("Content-Type", "application/json; charset=utf-8");
     });

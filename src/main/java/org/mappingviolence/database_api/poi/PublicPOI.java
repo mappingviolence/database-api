@@ -66,12 +66,20 @@ public class PublicPOI {
         (secondarySource) -> this.secondarySources.add(secondarySource.getValue()));
   }
 
+  public void setId(String id) {
+    this.id = id;
+  }
+
   public String getTitle() {
     return title;
   }
 
-  public void setId(String id) {
-    this.id = id;
+  public Date getDate() {
+    return date;
+  }
+
+  public Collection<String> getPrimarySources() {
+    return primarySources;
   }
 
 }
