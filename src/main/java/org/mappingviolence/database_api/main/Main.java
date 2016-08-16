@@ -3,7 +3,10 @@ package org.mappingviolence.database_api.main;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.mappingviolence.database.DatabaseConnection;
 import org.mappingviolence.database_api.server.Server;
+import org.mappingviolence.poi.POIVersion;
+import org.mongodb.morphia.Datastore;
 
 import com.google.common.primitives.Ints;
 
@@ -28,6 +31,9 @@ public class Main {
   private void run(boolean debug) {
     if (debug) {
       Logger.getGlobal().log(Level.WARNING, "DEBUG");
+      Datastore ds = DatabaseConnection.getDatabase("data-entry-wiki");
+
+      System.out.println(ds.createQuery(POIVersion.class).search("turtle").asList());
     } else {
       if (args.length == 2 && "-p".equals(args[0]) && Ints.tryParse(args[1]) != null) {
         port = Integer.valueOf(args[1]);

@@ -159,4 +159,15 @@ public class Database {
     PublicPOI filteredPublicPOI = gson.fromJson(jsonPublicPOI, PublicPOI.class);
     return filteredPublicPOI;
   }
+
+  public static List<String> publishedPOIIds() {
+    Datastore ds = DatabaseConnection.getDatabase("data-entry-wiki");
+    Query<POIWikiPage> currentPublisedPOIQuery = ds
+        .createQuery(POIWikiPage.class)
+        .filter("status", Status.IN_POOL);
+    List<String> publishedPOIIds = new ArrayList<>();
+    currentPublisedPOIQuery
+        .forEach((poiW) -> publishedPOIIds.add(poiW.getCurrentVersion().getId()));
+    return publishedPOIIds;
+  }
 }

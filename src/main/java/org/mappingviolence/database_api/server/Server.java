@@ -2,6 +2,7 @@ package org.mappingviolence.database_api.server;
 
 import org.mappingviolence.database_api.db.Database;
 import org.mappingviolence.database_api.exception.NotFoundException;
+import org.mappingviolence.database_api.search.Search;
 import org.mongodb.morphia.query.ValidationException;
 
 import spark.Spark;
@@ -48,6 +49,15 @@ public class Server {
         "/pois/:id",
         (req, resp) -> Database.pois(req.params(":id"), req.queryParams("f")),
         new JsonTransformer());
+    Spark.post(
+        "/searches",
+        "application/json",
+        (req, resp) -> Search.buildSearch(req.body()),
+        new JsonTransformer());
+    Spark.get(
+        "/searches/:id",
+        (req, resp) -> Search.runSearch(req.params(":id")),
+        new JsonTransformer());
 
     // because Spark :(
     Spark.get("/pois/", (req, resp) -> Database.pois(), new JsonTransformer());
@@ -55,8 +65,18 @@ public class Server {
         "/pois/:id/",
         (req, resp) -> Database.pois(req.params(":id"), req.queryParams("f")),
         new JsonTransformer());
+    Spark.post(
+        "/searches/",
+        "application/json",
+        (req, resp) -> Search.buildSearch(req.body()),
+        new JsonTransformer());
+    Spark.get(
+        "/searches/:id/",
+        (req, resp) -> Search.runSearch(req.params(":id")),
+        new JsonTransformer());
 
     Spark.get("/*", (req, resp) -> NOT_FOUND_ERROR);
+
     Spark.after((req, resp) -> {
       resp.header("Content-Type", "application/json; charset=utf-8");
     });
