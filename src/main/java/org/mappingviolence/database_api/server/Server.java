@@ -15,8 +15,8 @@ public class Server {
 
   private static final String SERVER_ERROR = "{" + "\"success\" : false," + "\"error\" : {"
       + "\"code\" : 500,"
-      + "\"message\" : \"There was an error in retrieving the pois. Please try again.\"" + "}"
-      + "}";
+      + "\"message\" : \"There was an error on our side in processing your request. Please try again.\""
+      + "}" + "}";
 
   public Server() {
   }
