@@ -77,6 +77,23 @@ public class Server {
 
     Spark.get("/*", (req, resp) -> NOT_FOUND_ERROR);
 
+    Spark.options("/*", (request, response) -> {
+
+      String accessControlRequestHeaders = request.headers("Access-Control-Request-Headers");
+      if (accessControlRequestHeaders != null) {
+        response.header("Access-Control-Allow-Headers", accessControlRequestHeaders);
+      }
+
+      String accessControlRequestMethod = request.headers("Access-Control-Request-Method");
+      if (accessControlRequestMethod != null) {
+        response.header("Access-Control-Allow-Methods", accessControlRequestMethod);
+      }
+
+      return "OK";
+    });
+
+    Spark.before((request, response) -> response.header("Access-Control-Allow-Origin", "*"));
+
     Spark.after((req, resp) -> {
       resp.header("Content-Type", "application/json; charset=utf-8");
     });

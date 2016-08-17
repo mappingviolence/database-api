@@ -90,7 +90,7 @@ public class Search {
     String id = Integer.toString(idCounter.getAndIncrement());
 
     cache.put(id, query);
-
+    System.out.println("done");
     return new ConstructionSuccess(id);
   }
 
