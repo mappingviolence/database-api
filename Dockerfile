@@ -6,15 +6,8 @@ WORKDIR /usr/share/mappingviolence-database-api
 
 COPY . /usr/share/mappingviolence-database-api
 
-RUN mvn install:install-file \
--Dfile=/usr/share/mappingviolence-database-api/lib/mappingviolence-core.jar \
--DgroupId=org.mappingviolence -DartifactId=core \
--Dversion=0.9.1 \
--Dpackaging=jar \
-&& ./build.sh
-
 ENV DB_API_PORT 4567
 
 EXPOSE $DB_API_PORT
 
-CMD ["sh", "-c", "./run.sh -p $DB_API_PORT"]
+CMD ["sh", "-c", "./build.sh && ./run.sh -p $DB_API_PORT"]
